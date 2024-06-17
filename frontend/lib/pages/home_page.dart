@@ -84,12 +84,15 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 10,),
                   ImageContainer(
                     selectedImage: _selectedImage, 
-                    pickImage: _showImageSourceActionSheet),
+                    pickImage: _showImageSourceActionSheet
+                    ),
                 ],
               ),
           ),
         ),
-        bottomNavigationBar: BottomNavbar(pickImage: _showImageSourceActionSheet)
+        bottomNavigationBar: BottomNavbar(
+          pickImage: _showImageSourceActionSheet
+          ),
     );
   }
 }

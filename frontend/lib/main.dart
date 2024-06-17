@@ -23,11 +23,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
-      // home: const NewPage(),
       theme: Provider.of<ThemeProvider>(context).themeData,
-      // routes: {
-      //   "/home_page": (context)=>const HomePage(),
-      // },
+      routes: {
+        "/home_page": (context)=>const HomePage(),
+      },
 
     );
   }

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:ocr_food_catelogs/components/full_screen_image.dart';
 // import 'package:image_picker/image_picker.dart';
 class ImageContainer extends StatefulWidget {
   final File? selectedImage;
@@ -20,12 +21,24 @@ class _ImageContainerState extends State<ImageContainer> {
       height: 400,
         margin: const EdgeInsets.only(bottom: 10),
         child: widget.selectedImage!=null ? 
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.file(widget.selectedImage!,
-          width: double.infinity,
-          height: 400,
-          fit: BoxFit.cover,
+        GestureDetector(
+          onTap: (){
+            Navigator.push(
+              context, MaterialPageRoute(
+                builder: (context)=> 
+                FullScreenImage(
+                  selectedImage: widget.selectedImage
+                  ),
+                ),
+              );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.file(widget.selectedImage!,
+            width: double.infinity,
+            height: 400,
+            fit: BoxFit.cover,
+            ),
           ),
         ):Center(
           child: Column(

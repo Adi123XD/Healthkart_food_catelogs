@@ -39,6 +39,7 @@ dependencies:
   provider: ^6.1.2
   permission_handler: ^11.3.1
   image_cropper: ^7.0.5
+  photo_view: ^0.15.0
 
 dev_dependencies:
   flutter_test:
