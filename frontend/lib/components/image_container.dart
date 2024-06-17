@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:ocr_food_catelogs/components/full_screen_image.dart';
+import 'package:ocr_food_catelogs/pages/full_screen_image.dart';
 // import 'package:image_picker/image_picker.dart';
 class ImageContainer extends StatefulWidget {
   final File? selectedImage;
