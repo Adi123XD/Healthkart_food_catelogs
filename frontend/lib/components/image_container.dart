@@ -27,7 +27,7 @@ class _ImageContainerState extends State<ImageContainer> {
               context, MaterialPageRoute(
                 builder: (context)=> 
                 FullScreenImage(
-                  selectedImage: widget.selectedImage
+                  selectedImage: widget.selectedImage,
                   ),
                 ),
               );

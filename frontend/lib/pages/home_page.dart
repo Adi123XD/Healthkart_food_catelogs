@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ocr_food_catelogs/components/bottom_navbar.dart';
 import 'package:ocr_food_catelogs/components/image_container.dart';
@@ -15,14 +16,51 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   File? _selectedImage;
   final ImagePicker picker = ImagePicker();
-  // function to pick a image 
+  final ImageCropper cropper = ImageCropper();
+
+  // function to crop an image 
+  Future<CroppedFile?> cropImage( String sourcePath) async
+  {
+    return await cropper.cropImage(
+          sourcePath: sourcePath,
+          uiSettings:[
+          AndroidUiSettings(
+            toolbarTitle: 'Edit Image',
+            toolbarColor: Colors.cyan,
+            toolbarWidgetColor: Colors.white,
+            activeControlsWidgetColor: Colors.cyan,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: false,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio3x2,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.ratio16x9,
+            ],
+          ),
+          IOSUiSettings(
+            title: 'Edit Image',
+            aspectRatioPresets: [
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio3x2,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.ratio16x9,
+            ],
+          ),
+        ],
+      );
+  }
+  // function to pick an image 
   Future<void> _pickImage(ImageSource source )async
   {
     try {
       final returnedImage =await picker.pickImage(source: source);
       if (returnedImage !=null){
+        final croppedFile =await cropImage(returnedImage.path);
         setState(() {
-          _selectedImage = File(returnedImage.path);
+          _selectedImage = File(croppedFile!.path);
         });
       }
       } on PlatformException catch (e) {
@@ -61,6 +99,9 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

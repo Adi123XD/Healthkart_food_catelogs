@@ -54,7 +54,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
             // ),
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all<Color>(Colors.cyan),
-              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              foregroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.tertiary),
               side: WidgetStateProperty.all<BorderSide>(const BorderSide(color: Colors.cyan)),
             ),
             child: const Padding(
