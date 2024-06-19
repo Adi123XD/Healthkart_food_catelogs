@@ -15,9 +15,21 @@ class FullScreenImage extends StatelessWidget {
         Center(
             child: PhotoView(
               minScale: PhotoViewComputedScale.contained,
-              maxScale: PhotoViewComputedScale.contained,
+              maxScale: PhotoViewComputedScale.covered*2,
               imageProvider: FileImage(selectedImage!), // Display the selected image
               backgroundDecoration: BoxDecoration(color: Colors.black), // Background color
+              scaleStateCycle: (PhotoViewScaleState actual) {
+                switch (actual) {
+                  case PhotoViewScaleState.initial:
+                    return PhotoViewScaleState.covering; // Zoom in
+                  case PhotoViewScaleState.covering:
+                    return PhotoViewScaleState.originalSize; // Zoom out
+                  case PhotoViewScaleState.originalSize:
+                    return PhotoViewScaleState.initial; // Return to initial state
+                  default:
+                    return PhotoViewScaleState.initial; // Default to initial state
+                }
+              },
             ),
           ),
           Positioned(
