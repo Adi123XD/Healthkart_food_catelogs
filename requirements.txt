@@ -1,0 +1,5 @@
+Flask
+flask-cors
+
+nutritional facts data 
+https://www.kaggle.com/datasets/shensivam/nutritional-facts-from-food-label

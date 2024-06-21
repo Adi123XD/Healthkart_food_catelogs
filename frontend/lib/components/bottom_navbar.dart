@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 class BottomNavbar extends StatefulWidget {
   final VoidCallback pickImage;
+  final VoidCallback process;
   const BottomNavbar({
     super.key,
-    required this.pickImage
+    required this.pickImage,
+    required this.process,
     });
 
   @override
@@ -11,13 +13,6 @@ class BottomNavbar extends StatefulWidget {
 }
 
 class _BottomNavbarState extends State<BottomNavbar> {
-  // bool isProcessClicked = false;
-  // toggle buttons 
-  // void _toggleButtons(){
-  //   setState(() {
-  //     isProcessClicked = !isProcessClicked;
-  //   });
-  // }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,14 +20,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
       child: Row(
         children: [
           Expanded(
-            child: TextButton(onPressed: (){
-              // _toggleButtons();
-              },
-            // this below code is to toggle button color on tap 
-            // style:ButtonStyle(backgroundColor: WidgetStateProperty.all<Color>(isProcessClicked?Colors.cyan: Colors.transparent),
-            // foregroundColor: WidgetStateProperty.all<Color>(isProcessClicked?Colors.white:Colors.cyan),
-            // side: WidgetStateProperty.all<BorderSide>(const BorderSide(color: Colors.cyan)),
-            // ),
+            child: TextButton(onPressed: widget.process,
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all<Color>(Colors.transparent),
               foregroundColor: WidgetStateProperty.all<Color>(Colors.cyan),
@@ -47,11 +35,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
           const SizedBox(width: 15,),
           Expanded(
             child: TextButton(onPressed: widget.pickImage,
-            // the below code is to toggle button color on click 
-            // style:ButtonStyle(backgroundColor: WidgetStateProperty.all<Color>(isProcessClicked?Colors.transparent: Colors.cyan),
-            //   foregroundColor: WidgetStateProperty.all<Color>(isProcessClicked? Colors.cyan:Colors.white),
-            //   side: WidgetStateProperty.all<BorderSide>(const BorderSide(color: Colors.cyan)),
-            // ),
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all<Color>(Colors.cyan),
               foregroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.tertiary),

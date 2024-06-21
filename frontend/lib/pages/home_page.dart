@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ocr_food_catelogs/components/bottom_navbar.dart';
 import 'package:ocr_food_catelogs/components/image_container.dart';
+import 'package:ocr_food_catelogs/services/api_services.dart';
 // import 'package:permission_handler/permission_handler.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,6 +19,9 @@ class _HomePageState extends State<HomePage> {
   File? _selectedImage;
   final ImagePicker picker = ImagePicker();
   final ImageCropper cropper = ImageCropper();
+  String? message="";
+  List<dynamic>? nutrients;
+  bool isLoading=false;
 
   // function to crop an image 
   Future<CroppedFile?> cropImage( String sourcePath) async
@@ -61,6 +66,8 @@ class _HomePageState extends State<HomePage> {
         final croppedFile =await cropImage(returnedImage.path);
         setState(() {
           _selectedImage = File(croppedFile!.path);
+          message ="";
+          nutrients =[];
         });
       }
       } on PlatformException catch (e) {
@@ -99,8 +106,54 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
-
+  void _fetchMessage() async {
+    setState(() {
+      isLoading = true; // Set loading state
+      message = "";
+      nutrients =[];
+    });
+    try {
+      var response = await ApiServices().uploadImage(_selectedImage);
+      if (response != null) {
+        setState(() {
+          message = response['message'];
+          nutrients = response['nutrients']; // Save nutrients data
+        });
+      } else {
+        setState(() {
+          message = "Failed to fetch message";
+        });
+        Fluttertoast.showToast(
+            msg: "Failed to fetch message",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }
+    }
+    catch (e) {
+      print('Error fetching message: $e');
+      setState(() {
+        message = "Failed to fetch message"; // Set error message
+      });
+      Fluttertoast.showToast(
+          msg: "Error: $e",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    } finally {
+      setState(() {
+        isLoading = false; // Stop loading
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +170,8 @@ class _HomePageState extends State<HomePage> {
           child: 
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: 
+                [
                   Text(
                     "Upload image to extract nutrients",
                     style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.inversePrimary,fontSize: 16),
@@ -127,13 +181,46 @@ class _HomePageState extends State<HomePage> {
                     selectedImage: _selectedImage, 
                     pickImage: _showImageSourceActionSheet
                     ),
+                    if (isLoading)
+                      Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    // display the extracted text
+                    // if (message != "")...[
+                    //   Text(message!)
+                    // ],
+                    if (nutrients != null) ...
+                    [
+                    Text(
+                      "Nutrients:",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.inversePrimary,
+                          fontSize: 16),
+                    ),
+                    const SizedBox(height: 10,),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: nutrients?.length,
+                      itemBuilder: (context, index) {
+                        var nutrient = nutrients?[index];
+                        return Text(
+                          "${nutrient['Nutrient']}: ${nutrient['Value']}",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.onBackground,
+                              fontSize: 14),
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
           ),
         ),
-        bottomNavigationBar: BottomNavbar(
-          pickImage: _showImageSourceActionSheet
-          ),
+        bottomNavigationBar: _selectedImage!=null? BottomNavbar(
+          pickImage: _showImageSourceActionSheet,
+          process: _fetchMessage,
+          ): null,
     );
   }
 }
