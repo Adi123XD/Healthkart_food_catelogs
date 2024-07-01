@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ocr_food_catelogs/components/bottom_navbar.dart';
+import 'package:ocr_food_catelogs/components/edit_nutrient.dart';
 import 'package:ocr_food_catelogs/components/image_container.dart';
 import 'package:ocr_food_catelogs/services/api_services.dart';
 // import 'package:permission_handler/permission_handler.dart';
@@ -154,6 +155,22 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+    void _showEditNutrientDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return EditNutrientDialog(
+          nutrient: nutrients![index]['Nutrient'],
+          initialValue: nutrients![index]['Value'],
+          onValueChanged: (newValue) {
+            setState(() {
+              nutrients![index]['Value'] = newValue;
+            });
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -186,32 +203,66 @@ class _HomePageState extends State<HomePage> {
                       child: CircularProgressIndicator(),
                     ),
                     // display the extracted text
-                    // if (message != "")...[
-                    //   Text(message!)
-                    // ],
+                    if (message != "")...[
+                      Text(message!)
+                    ],
                     if (nutrients != null) ...
                     [
-                    Text(
-                      "Nutrients:",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                          fontSize: 16),
-                    ),
+                    // Text(
+                    //   "Nutrients:",
+                    //   style: TextStyle(
+                    //       fontWeight: FontWeight.bold,
+                    //       color: Theme.of(context).colorScheme.inversePrimary,
+                    //       fontSize: 16),
+                    // ),
                     const SizedBox(height: 10,),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: nutrients?.length,
-                      itemBuilder: (context, index) {
-                        var nutrient = nutrients?[index];
-                        return Text(
-                          "${nutrient['Nutrient']}: ${nutrient['Value']}",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onBackground,
-                              fontSize: 14),
-                        );
-                      },
+                    Table(
+                  border: TableBorder.all(),
+                  columnWidths: {
+                    0: FlexColumnWidth(1),
+                    1: FlexColumnWidth(1),
+                  },
+                  children: [
+                    TableRow(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Nutrient',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Value',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    for (int i = 0; i < nutrients!.length; i++) 
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(nutrients![i]['Nutrient']),
+                          ),
+                          GestureDetector(
+                            onTap: () => _showEditNutrientDialog(i),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(nutrients![i]['Value']),
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
                   ],
                 ],
               ),
